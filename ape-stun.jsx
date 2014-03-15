@@ -1,16 +1,33 @@
+/************************************************
+
+ape-stun.jsx
+
+DESCRIPTION
+
+Part 1 of a Workflow to export text in Photoshop
+to paths in Illustrator
+
+*************************************************/
+
 (function (global) {
   var app = global.app;
   var files = app.openDialog();
 
+  // Returns the file path of a document
+
   function pathname (doc) {
     return Folder(doc.fullName.parent).fsName
   }
+
+  // Iterates through each item in a list
 
   function each (list, iterator) {
     for (var index = 0; index < list.length; ++index) {
       iterator(list[index], index, list);
     }
   }
+
+  // Exports all paths to Illustrator
 
   function exportPathsForIllustrator (doc) {
     var date = new Date().toLocaleString();
@@ -29,6 +46,8 @@
     doc.exportDocument(file, ExportType.ILLUSTRATORPATHS, options);
   }
 
+  // Renames all Work Paths with a unique name specified by date and #
+
   function nameDocumentWorkPath (doc, name) {
     var path = doc.pathItems.getByName('Work Path');
 
@@ -38,6 +57,8 @@
 
     path.name = name;
   }
+
+  // Go through each Text Layer and create a Work Path
 
   function processLayer (layer) {
     if (!(layer instanceof ArtLayer)) {
@@ -53,6 +74,8 @@
 
     nameDocumentWorkPath(doc, text);
   }
+
+  // Apply to all files selected for Workflow
 
   function processFile (file) {
     var doc = app.open(file);
